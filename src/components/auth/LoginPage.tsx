@@ -13,7 +13,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { TEACHER_DEFAULT_EMAIL, TEACHER_DEFAULT_PASSWORD } from '../../lib/authUtils';
+import { TEACHER_DEFAULT_EMAIL } from '../../lib/authUtils';
 
 export const LoginPage: React.FC = () => {
   const { login, loginWithGoogle } = useAuth();
@@ -24,9 +24,9 @@ export const LoginPage: React.FC = () => {
   const [studentPassword, setStudentPassword] = useState('');
   const [showStudentPassword, setShowStudentPassword] = useState(false);
 
-  // Teacher inputs (defaults to 224466)
+  // Teacher inputs
   const [teacherEmail, setTeacherEmail] = useState(TEACHER_DEFAULT_EMAIL);
-  const [teacherPassword, setTeacherPassword] = useState(TEACHER_DEFAULT_PASSWORD);
+  const [teacherPassword, setTeacherPassword] = useState('');
   const [showTeacherPassword, setShowTeacherPassword] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -173,17 +173,12 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label 
-                      htmlFor="teacher-password"
-                      className="block text-xs font-bold text-gray-700 uppercase tracking-wider"
-                    >
-                      Mật khẩu quản trị
-                    </label>
-                    <span className="text-[11px] text-rose-600 font-medium bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100">
-                      Mặc định: 224466
-                    </span>
-                  </div>
+                  <label 
+                    htmlFor="teacher-password"
+                    className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2"
+                  >
+                    Mật khẩu quản trị
+                  </label>
                   <div className="relative rounded-2xl shadow-2xs">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                       <Lock className="w-4 h-4" />
@@ -194,8 +189,8 @@ export const LoginPage: React.FC = () => {
                       required
                       value={teacherPassword}
                       onChange={(e) => setTeacherPassword(e.target.value)}
-                      placeholder="Nhập 224466"
-                      className="block w-full pl-10 pr-10 py-3 bg-white border border-rose-100 rounded-2xl text-sm text-gray-800 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all font-mono tracking-widest"
+                      placeholder="••••••••"
+                      className="block w-full pl-10 pr-10 py-3 bg-white border border-rose-100 rounded-2xl text-sm text-gray-800 placeholder-gray-400 focus:outline-hidden focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all"
                     />
                     <button
                       type="button"

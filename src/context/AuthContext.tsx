@@ -236,7 +236,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!isPasswordCorrect) {
           return { 
             success: false, 
-            error: 'Mật khẩu quản trị không chính xác. Mật khẩu mặc định là 224466.' 
+            error: 'Mật khẩu quản trị không chính xác. Vui lòng kiểm tra lại.' 
           };
         }
 
