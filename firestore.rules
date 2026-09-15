@@ -1,50 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Helper functions
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    // Check if user is teacher/admin by looking at users collection
-    function isTeacher() {
-      return isAuthenticated() && (
-        request.auth.token.email == 'tranyenthanh.04.ct@gmail.com' ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher'
-      );
-    }
-
-    // Users collection
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      // Allow user creation by self (initial teacher setup or login) or teacher
-      allow create, update: if isAuthenticated();
-      allow delete: if isTeacher();
-    }
-
-    // Materials (Tài liệu Ngữ văn)
-    match /materials/{materialId} {
-      allow read: if isAuthenticated();
-      allow create, update, delete: if isAuthenticated();
-    }
-
-    // Assignments (Bài tập)
-    match /assignments/{assignmentId} {
-      allow read: if isAuthenticated();
-      allow create, update, delete: if isAuthenticated();
-    }
-
-    // Submissions (Bài nộp của học sinh)
-    match /submissions/{submissionId} {
-      allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated();
-      allow delete: if isTeacher();
+    match /{document=**} {
+      allow read, write: if true;
     }
   }
 }

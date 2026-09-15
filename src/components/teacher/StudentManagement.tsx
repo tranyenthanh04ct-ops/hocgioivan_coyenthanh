@@ -110,7 +110,18 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ onShowToas
 
     setIsSubmitting(true);
     try {
-      // 1. Create in Firebase Auth using secondary app instance so teacher session stays intact!
+      // Check if username already exists
+      const isDuplicate = students.some(
+        s => s.studentCode?.toLowerCase().trim() === cleanUsername ||
+             s.email?.toLowerCase().trim() === studentEmail
+      );
+      if (isDuplicate) {
+        onShowToast('error', 'Tên đăng nhập này đã có học sinh sử dụng. Cô hãy chọn tên khác nhé.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 1. Generate or create UID
       const newUid = await createStudentAuthAccount(studentEmail, newPassword.trim());
 
       // 2. Save document to Firestore
@@ -136,15 +147,7 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ onShowToas
       await fetchStudents();
     } catch (err: any) {
       console.error('Create student error:', err);
-      if (err.code === 'auth/email-already-in-use') {
-        onShowToast('error', 'Tên đăng nhập này đã có học sinh sử dụng. Cô hãy chọn tên khác nhé.');
-      } else if (err.code === 'auth/operation-not-allowed') {
-        onShowToast('error', 'Firebase chưa bật Email/Password. Cô vui lòng bật trong Firebase Console > Authentication > Sign-in method.');
-      } else if (err.code === 'auth/weak-password') {
-        onShowToast('error', 'Mật khẩu cần tối thiểu 6 ký tự.');
-      } else {
-        onShowToast('error', 'Lỗi khi tạo tài khoản: ' + (err.message || 'Thử lại sau.'));
-      }
+      onShowToast('error', 'Lỗi khi tạo tài khoản: ' + (err.message || 'Thử lại sau.'));
     } finally {
       setIsSubmitting(false);
     }

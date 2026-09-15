@@ -2,8 +2,12 @@
  * Authentication helper utilities
  */
 
-// Firebase Authentication enforces a minimum 6-character password.
-// To seamlessly allow initial passwords like "1980" or 4-digit student PINs:
+export const TEACHER_DEFAULT_EMAIL = 'tranyenthanh.04.ct@gmail.com';
+export const TEACHER_DEFAULT_PASSWORD = '224466';
+
+// Storage key for persistent authentication
+export const AUTH_STORAGE_KEY = 'yenthanh_auth_session';
+
 export const normalizeAuthPassword = (rawPassword: string): string => {
   if (!rawPassword) return rawPassword;
   const trimmed = rawPassword.trim();
@@ -12,6 +16,3 @@ export const normalizeAuthPassword = (rawPassword: string): string => {
   }
   return trimmed;
 };
-
-export const FIREBASE_AUTH_PROVIDERS_URL = 
-  'https://console.firebase.google.com/project/wide-guild-1vxch/authentication/providers';

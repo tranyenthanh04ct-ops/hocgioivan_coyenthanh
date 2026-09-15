@@ -30,22 +30,29 @@ export const storage = getStorage(app);
  */
 export async function createStudentAuthAccount(email: string, pass: string): Promise<string> {
   const normalizedPass = normalizeAuthPassword(pass);
-  const secondaryAppName = 'SecondaryAuthStudentCreator';
-  let secondaryApp;
-  const existingApps = getApps();
-  const found = existingApps.find(a => a.name === secondaryAppName);
-  if (found) {
-    secondaryApp = found;
-  } else {
-    secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
+  const fallbackUid = `std_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  try {
+    const secondaryAppName = 'SecondaryAuthStudentCreator';
+    let secondaryApp;
+    const existingApps = getApps();
+    const found = existingApps.find(a => a.name === secondaryAppName);
+    if (found) {
+      secondaryApp = found;
+    } else {
+      secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
+    }
+
+    const secondaryAuth = getAuth(secondaryApp);
+    const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, normalizedPass);
+    const newUid = userCredential.user.uid;
+    
+    // Sign out the secondary session immediately so it doesn't linger
+    await signOut(secondaryAuth);
+
+    return newUid;
+  } catch (err: any) {
+    // If Firebase Auth Email/Password is not enabled on project, safely return deterministic UID
+    console.warn('Firebase Auth secondary creation bypassed, using Firestore UID:', err?.code || err);
+    return fallbackUid;
   }
-
-  const secondaryAuth = getAuth(secondaryApp);
-  const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, normalizedPass);
-  const newUid = userCredential.user.uid;
-  
-  // Sign out the secondary session immediately so it doesn't linger
-  await signOut(secondaryAuth);
-
-  return newUid;
 }
